@@ -4,6 +4,7 @@ from conferences.models import Conferences
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.db.models.functions import TruncDate
 def email_validator(value):
     if not value.endswith('@esprit.tn'):
         raise ValidationError('Email invalide only @esprit.tn are allowed')
@@ -40,11 +41,16 @@ class Reservation(models.Model):
             raise ValidationError("You can only reserve for upcoming conference")
         reservation_count=Reservation.objects.filter(
             participant=self.participant,
-            reservation_date=self.reservation_date
-        )
-        if reservation_count>=3:
+            reservation_date__date=timezone.now().date()
+        ).count()
+        
+        print(reservation_count)
+        if reservation_count>=2:
              raise ValidationError("You can only make up to three reservations per day")
 
     class Meta:
         unique_together=('conference','participant')#ajouter la contrainte que un participant peut acceder a une conference et vice versa
+    def __str__(self):
+        return f"title of reserved conference {self.conference.title}"
+        
        

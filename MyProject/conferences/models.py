@@ -31,4 +31,6 @@ class Conferences(models.Model):
                 name="the start date must be greater than today or equal"
             )
         ]
+    def __str__(self):
+        return f"title conference {self.title}"
 
