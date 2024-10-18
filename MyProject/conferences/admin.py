@@ -27,11 +27,19 @@ class ParticipentFilter(admin.SimpleListFilter):
             ('0',('No Participants')),
             ('more',('More Participant'))
         )
+    """
     def queryset(self,request,queryset):
         if self.value()=='0':
             return queryset.annotate(participant_count=Count('reservations')).filter(participant_count=0)
         if self.value()=='more':
             return queryset.annotate(participant_count=Count('reservations')).filter(participant_count__gt=0)
+        return queryset
+        """
+    def queryset(self,request,queryset):
+        if self.value()=='0':
+            return queryset.filter(reservations__isnull=True)
+        if self.value()=='more':
+            return queryset.filter(reservations__isnull=False)
         return queryset
     
 class ConferenceDataFilter(admin.SimpleListFilter):
@@ -56,7 +64,7 @@ class conferenceAdmin(admin.ModelAdmin):
     list_display=('title','location','start_date','end_date','price')
     search_fields=('title',)
     list_per_page=2
-    ordering=('start_date','title')
+    ordering=('start_date','title')#ordre inverse ('-start_date')
     fieldsets=(
         ('description',{
             'fields':('title','description','category','location','price','capacity')

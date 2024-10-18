@@ -47,6 +47,22 @@ class ParticipantAdmin(admin.ModelAdmin):
     inlines=[ReservationInline]
 
 
+
+
+
+class ReservationAdmin(admin.ModelAdmin):
+    list_display=['reservation_date','conference','participant','confirmed']
+    actions=['confirmed','unconfirmed']
+    def confirmed(self,request,queryset):
+        queryset.update(confirmed=True)
+        self.message_user(request,"Les reséravations sont confirmées")
+    confirmed.short_description="Reservation à confirmer"
+
+    def unconfirmed(self,request,queryset):
+        queryset.update(confirmed=False)
+        self.message_user(request,"Les reséravations sont non confirmées")
+    unconfirmed.short_description="Reservation à non confirmer"
+
     
 admin.site.register(Participant,ParticipantAdmin)
-admin.site.register(Reservation)
+admin.site.register(Reservation,ReservationAdmin)
