@@ -1,14 +1,55 @@
 <h1>Liste des conferences</h1>
+{% if user.is_authenticated %}
+{% if  user.participant_category == "chercheur" %}
+<a href="{%url 'conference_create' %}" >Ajouter une conference</a>
+{%endif%}
+{%endif%}
+
+
+
+{% if user.is_authenticated %}
+    <h1>Welcome, {{ user.username }} ({{ user.participant_category }})</h1>
+    <a href="{% url 'logout' %}">Logout</a>
+{% else %}
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'register' %}">Register</a>
+{% endif %}
+
+
+<form method="GET" action="{% url 'listviewconf' %}">
+<select name="category" onchange="this.form.submit()">
+    <option>---- selectionner un choix ----</option>
+    {% for cat in category %}
+    <option value="{{cat.id}}">{{cat.title}}</option>
+    {% endfor %}
+</select>
+
+</form>
 {% for c in conferences%}
 <fieldset>
     <legend>{{c.title}}</legend>
-    <p>description:{{c.discription}}</p>
+    <p>description:{{c.description}}</p>
     <p>start_date:{{c.start_date}}</p>
     <p>end_date:{{c.end_date}}</p>
     <p>location:{{c.location}}</p>
     <p>price:{{c.price}}</p>
     <p>capacity:{{c.capacity}}</p>
-    <a href="{%url 'detailconf' c.id%}" >Details</a>
+    <p>category:{{c.category.title}}</p>
+    <a href="{% url 'detailconf' c.id%}" >Details</a>
+    <a href="{% url 'conference_update' c.id%}" >Modifier</a >
+    <a href="{% url 'conference_delete' c.id%}">Supprimer</a>
+
+    {% if user.is_authenticated %}
+    {% if c.id not in user_reservation %}
+    <form method="post" action="{% url 'reserve' c.id %}">
+        {% csrf_token %}
+        <button type="submit">Reserver</button>
+    </form>
+    {% else %}
+    <p>vous avez une reservation</p>
+    {% endif %}
+    {% endif %}
+
 
 </fieldset>
 {%empty%}

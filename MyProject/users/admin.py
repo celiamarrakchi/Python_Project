@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.forms import ModelForm
+from django.http import HttpRequest
 from .models import Participant,Reservation
 from django.db.models import Count
 # Register your models here.
@@ -27,7 +29,7 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_filter = ('participant_category',ParticipentFilter,)
     search_fields = ('username', 'first_name', 'last_name')
     list_per_page= 2
-    date_hierarchy='created_at' #affichage selon la date de creation
+    #date_hierarchy='created_at' #affichage selon la date de creation
     readonly_fields=('created_at','updated_at')
     #regroupement
     fieldsets=(
@@ -45,6 +47,11 @@ class ParticipantAdmin(admin.ModelAdmin):
     prepopulated_fields = {'email': ('username',)}
     #ajouter (model) une reservation au niveau du formualire du participant     
     inlines=[ReservationInline]
+
+    def save_model(self,request,obj,form,change):
+        obj.set_password(form.cleaned_data['password'])
+        super().save_model(request,obj,form,change)
+
 
 
 

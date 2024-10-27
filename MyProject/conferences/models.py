@@ -22,11 +22,10 @@ class Conferences(models.Model):
             raise ValidationError("End_date must be greater than start_day")
         
     class Meta:
-        verbose_name_plural="Conferences"
         constraints=[
             models.CheckConstraint(
                 check=models.Q(
-                    start_date__gte=timezone.now().date(),
+                    start_date__gte=timezone.now().date()
                 ),
                 name="the start date must be greater than today or equal"
             )

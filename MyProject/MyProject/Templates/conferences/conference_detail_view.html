@@ -1,3 +1,22 @@
-<h1>Detail:</h1> 
-<p>{{conf.description}}</p>
-<p>{{conf.category.title}}</p>
+<h1>Détails de la conférence : {{ conf.title }}</h1>
+<p><strong>Description:</strong> {{ conf.description }}</p>
+<p><strong>Date de début:</strong> {{ conf.start_date }}</p>
+<p><strong>Date de fin:</strong> {{ conf.end_date }}</p>
+<p><strong>Lieu:</strong> {{ conf.location }}</p>
+<p><strong>Prix:</strong> {{ conf.price }} €</p>
+<p><strong>Capacité:</strong> {{ conf.capacity }}</p>
+<p><strong>Programme:</strong> <a href="{{ conf.program.url }}">Télécharger</a></p>
+<p><strong>Catégorie:</strong> {{ conf.category.title }}</p>
+<a href="{% url 'conference_update' conf.id %}">Modifier</a>
+<a href="{% url 'listviewconf' %}">Retour à la liste</a>
+<h3>Reservations:</h3>
+<ul>
+    {% for reservation in reservations %}
+        <li>
+            {{ reservation.participant.username }} - {{ reservation.reservation_date }} 
+            {% if reservation.confirmed %} (Confirmed) {% else %} (Pending) {% endif %}
+        </li>
+    {% empty %}
+        <li>No reservations found.</li>
+    {% endfor %}
+</ul>

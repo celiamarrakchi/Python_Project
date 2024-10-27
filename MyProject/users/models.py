@@ -25,8 +25,8 @@ class Participant(AbstractUser):
 
     )
     participant_category=models.CharField(max_length=255,choices= CHOICES)
-    created_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now=True)
+    created_at=models.DateTimeField(auto_now_add=True,null=True)
+    updated_at=models.DateTimeField(auto_now=True,null=True)
     reservations=models.ManyToManyField(Conferences,through='Reservation',related_name='reservations')
     class Meta:
          verbose_name_plural="Participant"
